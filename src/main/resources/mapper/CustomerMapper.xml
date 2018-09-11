@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.demo.dao.CustomerMapper" >
+
+    <resultMap id="CustomerEntity" type="com.example.demo.model.Customer" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="role" property="role" jdbcType="INTEGER" />
+        <!--<result column="status" property="status" jdbcType="INTEGER" />-->
+    </resultMap>
+
+    <select id="getCustomerById" parameterType="int" resultMap="CustomerEntity">
+        SELECT * FROM customer WHERE  ID= #{id}
+    </select>
+
+    <select id="deleteCustomerById" parameterType="int" resultType="java.lang.Integer">
+        DELETE  FROM customer WHERE  ID= #{id}
+    </select>
+    <insert id="insertCustomerAutoId" parameterType="com.example.demo.model.Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into customer (user_name,pwd,role)
+        values (#{userName},#{pwd},#{role})
+    </insert>
+
+    <insert id="insertCustomer" parameterType="com.example.demo.model.Customer" useGeneratedKeys="true" keyProperty="id">
+        insert into customer (id,user_name,pwd,role)
+        values (#{id},#{userName},#{pwd},#{role})
+    </insert>
+    
+
+    <!--<update id="updateCustomer">-->
+        <!--update Author set-->
+        <!--username = #{username},-->
+        <!--password = #{password},-->
+        <!--email = #{email},-->
+        <!--bio = #{bio}-->
+        <!--where id = #{id}-->
+    <!--</update>-->
+    <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.model.Customer">
+        update customer
+        <set >
+            <if test="pwd != null" >
+                pwd = #{pwd,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null" >
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="role != null" >
+                role = #{role,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    
+    <select id="findAll" resultMap="CustomerEntity">
+        select * from customer
+    </select>
+
+</mapper>
